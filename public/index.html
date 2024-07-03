@@ -79,7 +79,7 @@
 	<h1>HTML to PNG 변환기</h1>
 
 	<h2>파일 변환</h2>
-	<input type="file" id="fileInput" multiple accept=".html">
+	<input type="file" id="fileInput" accept=".html">
 	<button id="convertBtn">파일 변환 및 다운로드</button>
 
 	<h2>URL 변환</h2>
@@ -142,7 +142,7 @@
 				}
 
 				try {
-					const response = await fetch('/convert', {
+					const response = await fetch('/convert-html', {
 						method: 'POST',
 						body: formData
 					});
@@ -155,13 +155,13 @@
 					const url = window.URL.createObjectURL(blob);
 					const a = document.createElement('a');
 					a.href = url;
-					a.download = 'converted_images.zip';
+					a.download = 'converted_images.png';
 					document.body.appendChild(a);
 					a.click();
 					document.body.removeChild(a);
 					window.URL.revokeObjectURL(url);
 
-					status.textContent = '변환 완료! ZIP 파일이 다운로드됩니다.';
+					status.textContent = '변환 완료! 이미지 파일이 다운로드됩니다.';
 				} catch (error) {
 					console.error('오류:', error);
 					status.textContent = '변환 중 오류가 발생했습니다.';
@@ -238,7 +238,15 @@
 				status.textContent = '다중 URL 변환 중...';
 
 				try {
-					const response = await fetch('/convert-multi-url', {
+					// const response = await fetch('/convert-multi-url', {
+					// 	method: 'POST',
+					// 	headers: {
+					// 		'Content-Type': 'application/json',
+					// 	},
+					// 	body: JSON.stringify({ baseUrl, codes }),
+					// });
+
+					const response = await fetch('/test', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
