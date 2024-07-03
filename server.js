@@ -6,6 +6,8 @@ const fsp = require("fs").promises;
 const path = require("path");
 const archiver = require("archiver");
 
+const fontOption = require("./fontOption");
+
 const app = express();
 
 const storage = multer.diskStorage({
@@ -54,6 +56,8 @@ async function handleConvert(req, res) {
 			const htmlContent = await fsp.readFile(file.path, "utf8");
 			const page = await browser.newPage();
 			await page.setContent(htmlContent);
+			await page.addStyleTag(fontOption);
+
 			const screenshot = await page.screenshot({ fullPage: true, type: "png" });
 			await page.close();
 
@@ -83,6 +87,7 @@ async function handleConvertUrl(req, res) {
 	try {
 		const page = await browser.newPage();
 		await page.goto(url, { waitUntil: "networkidle0" });
+		await page.addStyleTag(fontOption);
 		const screenshot = await page.screenshot({ fullPage: true, type: "png" });
 		await browser.close();
 
@@ -124,6 +129,7 @@ async function handleConvertMultiUrl(req, res) {
 			const url = baseUrl.replace("{code}", code);
 			const page = await browser.newPage();
 			await page.goto(url, { waitUntil: "networkidle0" });
+			await page.addStyleTag(fontOption);
 			const screenshot = await page.screenshot({ fullPage: true, type: "png" });
 			await page.close();
 
