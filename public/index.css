@@ -1,0 +1,71 @@
+body {
+	font-family: Arial, sans-serif;
+	max-width: 750px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+h1,
+h2,
+p {
+	text-align: center;
+}
+
+#fileInput,
+#urlInput,
+#baseUrlInput,
+#codesInput {
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+button {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+button:hover {
+	background-color: #45a049;
+}
+
+#status {
+	margin-top: 20px;
+	text-align: center;
+}
+
+textarea {
+	width: 100%;
+	height: 100px;
+}
+
+.url-input-container {
+	position: relative;
+	width: 100%;
+	text-align: center;
+}
+
+.url-input-container input {
+	width: 100%;
+	padding: 5px;
+}
+
+.url-input-container h4 {
+	margin: 2px;
+}
+
+.url-input-overlay {
+	/* padding: 2px; */
+	margin: 2px;
+	pointer-events: none;
+}
+
+.url-input-overlay .highlight {
+	color: red;
+	font-weight: bold;
+}

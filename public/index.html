@@ -2,279 +2,49 @@
 <html lang="ko">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>HTML to PNG 변환기</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			max-width: 600px;
-			margin: 0 auto;
-			padding: 20px;
-		}
-
-		h1,
-		h2,
-		p {
-			text-align: center;
-		}
-
-		#fileInput,
-		#urlInput,
-		#baseUrlInput,
-		#codesInput {
-			margin-bottom: 10px;
-			width: 100%;
-		}
-
-		button {
-			display: block;
-			width: 100%;
-			padding: 10px;
-			background-color: #4CAF50;
-			color: white;
-			border: none;
-			cursor: pointer;
-			margin-bottom: 10px;
-		}
-
-		button:hover {
-			background-color: #45a049;
-		}
-
-		#status {
-			margin-top: 20px;
-			text-align: center;
-		}
-
-		textarea {
-			width: 100%;
-			height: 100px;
-		}
-
-		.url-input-container {
-			position: relative;
-			width: 100%;
-		}
-
-		.url-input-container input {
-			width: 100%;
-			padding: 5px;
-		}
-
-		.url-input-overlay {
-			padding: 2px;
-			margin: 2px;
-			pointer-events: none;
-		}
-
-		.url-input-overlay .highlight {
-			color: red;
-			font-weight: bold;
-		}
-	</style>
+	<link rel="stylesheet" href="./index.css" />
 </head>
 
 <body>
 	<h1>HTML to PNG 변환기</h1>
 
-	<h2>파일 변환</h2>
-	<input type="file" id="fileInput" accept=".html">
-	<button id="convertBtn">파일 변환 및 다운로드</button>
-
-	<h2>URL 변환</h2>
-	<input type="text" id="urlInput" value="https://211.234.123.19/cug/cug_orgbbs/calc_goodsdetail_view.php?g_code=">
-	<button id="convertUrlBtn">URL 변환 및 다운로드</button>
-
-	<h2>다중 URL 변환</h2>
 	<div class="url-input-container">
-		<input type="text" id="baseUrlInput"
-			value="https://211.234.123.19/cug/cug_orgbbs/calc_goodsdetail_view.php?g_code={code}">
-		<br />
-	</div>
-	<br />
-	<p>⚠️["a", "b"] 또는 {"code": ["a", "b"]} 또는 한 줄에 하나씩 입력</p>
-	<textarea id="codesInput" value='["a", "b"] 또는 {"code": ["a", "b"]} 또는 한 줄에 하나씩 입력'></textarea>
-	<p>URL 패턴</p>
-	<div class="url-input-overlay" id="baseUrlOverlay"></div>
-	<br />
-	<button id="convertMultiUrlBtn">다중 URL 변환 및 다운로드</button>
 
+		<h2>파일 변환</h2>
+		<input type="file" id="fileInput" accept=".html" />
+		<button id="converFileBtn">파일 변환 및 다운로드</button>
+
+		<h2>URL 변환</h2>
+		<input type="text" id="urlInput"
+			value="https://211.234.123.19/cug/cug_orgbbs/calc_goodsdetail_view.php?g_code=" />
+		<button id="convertUrlBtn">URL 변환 및 다운로드</button>
+
+		<h2>여러 URL 변환</h2>
+
+		<div style="text-align: center;">
+			변환 코드 입력 : <input type="text" id="codesInput" value='code' style="width: 200px;"></input>
+		</div>
+
+		<p>⚠️ 입력한 변환 코드를 { } 로 감싼 후 포함한 URL을 입력</p>
+		<p>예시 : www.example.com?g_code={code} </p>
+		<input type="text" id="baseUrlInput"
+			value="https://211.234.123.19/cug/cug_orgbbs/calc_goodsdetail_view.php?g_code={code}" />
+
+		<p>⚠️ 개행 또는 쉼표로 구분 (중복과 공백은 제거됩니다)</p>
+		<textarea id="valuesInput" value='["a", "b"] 또는 {"code": ["a", "b"]} 또는 한 줄에 하나씩 입력'></textarea>
+		<h4>URL 패턴</h4>
+		<div class="url-input-overlay" id="baseUrlOverlay" style="text-align: center;"></div>
+		<br />
+		<button id="convertMultiUrlBtn">다중 URL 변환 및 다운로드</button>
+	</div>
 	<div id="status"></div>
 
+	<script type="module" src="./index.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
 
-			const fileInput = document.getElementById('fileInput');
-			const urlInput = document.getElementById('urlInput');
-			const baseUrlInput = document.getElementById('baseUrlInput');
-			const baseUrlOverlay = document.getElementById('baseUrlOverlay');
-			const codesInput = document.getElementById('codesInput');
-			const convertBtn = document.getElementById('convertBtn');
-			const convertUrlBtn = document.getElementById('convertUrlBtn');
-			const convertMultiUrlBtn = document.getElementById('convertMultiUrlBtn');
-			const status = document.getElementById('status');
-
-			convertBtn.addEventListener('click', convertFiles);
-			convertUrlBtn.addEventListener('click', convertUrl);
-			convertMultiUrlBtn.addEventListener('click', convertMultiUrl);
-
-			function updateOverlay() {
-				let text = baseUrlInput.value;
-				text = text.replace(/{code}/g, '<span class="highlight">{code}</span>');
-				baseUrlOverlay.innerHTML = text;
-			}
-
-			baseUrlInput.addEventListener('input', updateOverlay);
-			updateOverlay();  // 초기 로드 시 실행
-
-			async function convertFiles() {
-				const files = fileInput.files;
-				if (files.length === 0) {
-					status.textContent = '파일을 선택해주세요.';
-					return;
-				}
-
-				status.textContent = '변환 중...';
-				const formData = new FormData();
-				for (let i = 0; i < files.length; i++) {
-					formData.append('html', files[i], encodeURIComponent(files[i].name));
-				}
-
-				try {
-					const response = await fetch('/convert-html', {
-						method: 'POST',
-						body: formData
-					});
-
-					if (!response.ok) {
-						throw new Error('서버 응답 오류');
-					}
-
-					const blob = await response.blob();
-					const url = window.URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = 'converted_images.png';
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-					window.URL.revokeObjectURL(url);
-
-					status.textContent = '변환 완료! 이미지 파일이 다운로드됩니다.';
-				} catch (error) {
-					console.error('오류:', error);
-					status.textContent = '변환 중 오류가 발생했습니다.';
-				}
-			}
-
-			async function convertUrl() {
-				try {
-
-					const url = urlInput.value.trim();
-					if (!url) {
-						status.textContent = 'URL을 입력해주세요.';
-						return;
-					}
-
-					status.textContent = 'URL 변환 중...';
-
-
-					const response = await fetch('/convert-url', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ url }),
-					});
-
-					if (!response.ok) {
-						throw new Error('서버 응답 오류');
-					}
-
-					const blob = await response.blob();
-					const downloadURL = window.URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = downloadURL;
-					a.download = 'converted_url.png';
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-					window.URL.revokeObjectURL(downloadURL);
-
-					status.textContent = 'URL 변환 완료! PNG 파일이 다운로드됩니다.';
-				} catch (error) {
-					console.error('오류:', error);
-					status.textContent = 'URL 변환 중 오류가 발생했습니다.';
-				}
-			}
-
-			async function convertMultiUrl() {
-				const baseUrl = baseUrlInput.value.trim();
-				const codesText = codesInput.value.trim();
-
-				if (!baseUrl || !codesText) {
-					status.textContent = 'Base URL과 코드를 입력해주세요.';
-					return;
-				}
-
-				let codes;
-				try {
-					codes = JSON.parse(codesText);
-				} catch (e) {
-					// JSON 파싱 실패 시 줄바꿈으로 구분된 텍스트로 처리
-					codes = codesText.split('\n').map(code => code.trim()).filter(Boolean);
-				}
-
-				if (typeof codes === 'object' && !Array.isArray(codes)) {
-					codes = codes.code || Object.values(codes)[0];
-				}
-
-				if (!Array.isArray(codes)) {
-					status.textContent = '올바른 형식의 코드를 입력해주세요.';
-					return;
-				}
-
-				status.textContent = '다중 URL 변환 중...';
-
-				try {
-					// const response = await fetch('/convert-multi-url', {
-					// 	method: 'POST',
-					// 	headers: {
-					// 		'Content-Type': 'application/json',
-					// 	},
-					// 	body: JSON.stringify({ baseUrl, codes }),
-					// });
-
-					const response = await fetch('/test', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ baseUrl, codes }),
-					});
-
-					if (!response.ok) {
-						throw new Error('서버 응답 오류');
-					}
-
-					const blob = await response.blob();
-					const url = window.URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = 'converted_multi_url.zip';
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-					window.URL.revokeObjectURL(url);
-
-					status.textContent = '다중 URL 변환 완료! ZIP 파일이 다운로드됩니다.';
-				} catch (error) {
-					console.error('오류:', error);
-					status.textContent = '다중 URL 변환 중 오류가 발생했습니다.';
-				}
-			}
-		});
 	</script>
 </body>
 

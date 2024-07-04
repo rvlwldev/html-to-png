@@ -26,16 +26,10 @@ app.post("/convert-url", async (req, res) => {
 
 // 여러 URL 변환
 app.post("/convert-multi-url", async (req, res) => {
-	const baseURL = req.body.baseURL;
-	const values = req.body.values;
-	const codes = req.body.codes;
+	const urls = req.body.list;
+	const names = req.body.names;
 
-	const urls = [
-		"https://211.234.123.19/cug/cug_orgbbs/calc_goodsdetail_view.php?g_code=32004GP000",
-	];
-	const filenames = ["32004GP000.png"];
-
-	const ZIP = await screenshotByUrlList(urls, filenames);
+	const ZIP = await screenshotByUrlList(urls, names);
 
 	res.setHeader("Content-Type", "application/zip");
 	res.setHeader("Content-Disposition", 'attachment; filename="screenshots.zip"');
