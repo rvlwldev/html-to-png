@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx pm2 start server.js",
+    "start": "npx pm2 start server.js --watch",
     "stop": "npx pm2 stop server && npx pm2 delete server"
   },
   "author": "",
