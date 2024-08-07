@@ -19,7 +19,7 @@ p {
 	width: 100%;
 }
 
-button {
+.buttons {
 	display: block;
 	width: 100%;
 	padding: 10px;
@@ -30,7 +30,7 @@ button {
 	margin-bottom: 10px;
 }
 
-button:hover {
+.buttons:hover {
 	background-color: #45a049;
 }
 

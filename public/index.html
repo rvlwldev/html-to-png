@@ -15,12 +15,12 @@
 
 		<h2>파일 변환</h2>
 		<input type="file" id="fileInput" accept=".html" />
-		<button id="converFileBtn">파일 변환 및 다운로드</button>
+		<button class="buttons" id="converFileBtn">파일 변환 및 다운로드</button>
 
 		<h2>URL 변환</h2>
 		<input type="text" id="urlInput"
 			value="https://211.234.123.19/cug/cug_orgbbs/calc_goodsdetail_view.php?g_code=" />
-		<button id="convertUrlBtn">URL 변환 및 다운로드</button>
+		<button class="buttons" id="convertUrlBtn">URL 변환 및 다운로드</button>
 
 		<h2>여러 URL 변환</h2>
 
@@ -38,14 +38,13 @@
 		<h4>URL 패턴</h4>
 		<div class="url-input-overlay" id="baseUrlOverlay" style="text-align: center;"></div>
 		<br />
-		<button id="convertMultiUrlBtn">다중 URL 변환 및 다운로드</button>
+		<button class="buttons" id="convertMultiUrlBtn">다중 URL 변환 및 다운로드</button>
 	</div>
 	<div id="status"></div>
+	<div id="root"></div>
 
 	<script type="module" src="./index.js"></script>
-	<script>
-
-	</script>
+	<script defer="defer" src="./bundle.js"></script>
 </body>
 
 </html>
