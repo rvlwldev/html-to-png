@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1" />
+		<title>Chat Beta</title>
+	</head>
+
+	<body>
+		<p>test values : H07080283 , HB2425611</p>
+
+		<div>
+			서비스 :
+			<input
+				id="service"
+				value="coopbase" />
+		</div>
+		<br />
+		<div>
+			유저 코드 :
+			<input
+				id="code"
+				value="HB2425611" />
+		</div>
+		<br />
+		<button id="button">불러오기</button>
+
+		<div id="root"></div>
+	</body>
+	<script src="./index.js"></script>
+	<script>
+		button.addEventListener("click", async () => {
+			const service = document.getElementById("service");
+			const code = document.getElementById("code");
+			const button = document.getElementById("button");
+
+			if (!service.value) {
+				service.focus();
+				return;
+			}
+			if (!code.value) {
+				code.focus();
+				return;
+			}
+
+			const url = `authenticate/${service.value}/users`;
+			const result = await requestUserAndSetCookie(url, code.value);
+			if (result) loadBundle();
+		});
+	</script>
+</html>

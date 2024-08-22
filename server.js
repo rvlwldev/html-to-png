@@ -8,10 +8,6 @@ app.use(express.json());
 const { saveFile, deleteFile, encodeFileToUTF8 } = require("./src/FileHandler");
 const { screenshotByFile, screenshotByUrl, screenshotByUrlList } = require("./src/FileParser");
 
-app.get("/chat", (req, res) => {
-	res.sendFile(path.join(__dirname, "public", "chat.html"));
-});
-
 // 단일 파일 변환
 app.post("/convert-html", saveFile.single("html"), async (req, res) => {
 	await encodeFileToUTF8(req.file);
