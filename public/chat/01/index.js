@@ -11,7 +11,7 @@ function loadBundle() {
 	document.head.appendChild(script);
 }
 
-const baseURL = "http://3.36.38.178:3000/";
+const baseURL = "http://3.36.38.178:3000";
 
 // e.g. "http://192.168.1.232:8080/authenticate/coopbase/users",
 
